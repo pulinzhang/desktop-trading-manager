@@ -1,0 +1,77 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1f1f1f 0%, #2d2d2d 100%);
+}
+
+.login-card {
+  width: 400px;
+  background: #141414;
+  border: 1px solid #303030;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-header h1 {
+  color: #fff;
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.login-header p {
+  color: #8c8c8c;
+  margin: 0;
+  font-size: 14px;
+}
+
+.error-message {
+  color: #ff4d4f;
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #303030;
+}
+
+.login-footer p {
+  color: #8c8c8c;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.login-tabs .ant-tabs-nav {
+  margin: 0 0 24px 0;
+}
+
+.login-tabs .ant-tabs-nav::before {
+  border-bottom: 1px solid #303030;
+}
+
+.login-tabs .ant-tabs-tab {
+  padding: 8px 16px;
+}
+
+.login-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  color: #bfbfbf;
+  font-weight: 500;
+}
+
+.login-tabs .ant-tabs-tab:hover .ant-tabs-tab-btn,
+.login-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #fff;
+}
+
+.login-tabs .ant-tabs-ink-bar {
+  background: #ff4d4f;
+}
+

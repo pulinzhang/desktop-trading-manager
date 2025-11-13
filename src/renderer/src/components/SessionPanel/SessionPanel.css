@@ -1,0 +1,69 @@
+.session-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.session-panel.dark {
+  color: #fff;
+}
+
+.session-panel.light {
+  color: #1f1f1f;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.session-panel.dark .setting-item {
+  color: #fff;
+}
+
+.session-panel.light .setting-item {
+  color: #1f1f1f;
+}
+
+.session-counter {
+  text-align: center;
+}
+
+.session-counter-label {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.session-panel.dark .session-counter-label {
+  color: #8c8c8c;
+}
+
+.session-panel.light .session-counter-label {
+  color: #666;
+}
+
+.session-counter-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.session-counter-value span {
+  font-size: 32px;
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.session-panel.dark .session-counter-value span {
+  color: #fff;
+}
+
+.session-panel.light .session-counter-value span {
+  color: #000;
+}
+

@@ -1,0 +1,120 @@
+.dashboard-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.dashboard-header.dark {
+  background: #141414;
+  border-bottom: 1px solid #303030;
+}
+
+.dashboard-header.light {
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.dashboard-header.dark h1 {
+  color: #fff;
+}
+
+.dashboard-header.light h1 {
+  color: #000;
+}
+
+.dashboard-left-panel {
+  flex: 1;
+  min-width: 400px;
+  border-radius: 4px;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s;
+}
+
+.dashboard-left-panel.dark {
+  background: #141414;
+}
+
+.dashboard-left-panel.light {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.dashboard-middle-panel {
+  flex: 1;
+  min-width: 350px;
+  border-radius: 4px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: background-color 0.3s;
+}
+
+.dashboard-middle-panel.dark {
+  background: #141414;
+}
+
+.dashboard-middle-panel.light {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.dashboard-right-panel {
+  flex: 0 0 350px;
+  border-radius: 4px;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: background-color 0.3s;
+}
+
+.dashboard-right-panel.dark {
+  background: #141414;
+}
+
+.dashboard-right-panel.light {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.dashboard-layout.light .panel-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.dashboard-layout.light .panel-card :global(.ant-card-head) {
+  background: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.dashboard-layout.light .panel-card :global(.ant-card-head-title) {
+  color: #000;
+}
+
+.dashboard-layout.light .panel-card :global(.ant-card-body) {
+  color: #1f1f1f;
+}
+
+.dashboard-layout.light .panel-card :global(.ant-statistic-title) {
+  color: #666;
+}
+
+.dashboard-layout.light .panel-card :global(.ant-statistic-content) {
+  color: #1f1f1f;
+}
+

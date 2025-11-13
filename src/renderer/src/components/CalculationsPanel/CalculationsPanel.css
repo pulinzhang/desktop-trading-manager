@@ -1,0 +1,75 @@
+.calculations-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-card {
+  background: #1f1f1f;
+  border: 1px solid #303030;
+}
+
+.panel-card :global(.ant-card-head) {
+  background: #141414;
+  border-bottom: 1px solid #303030;
+}
+
+.panel-card :global(.ant-card-head-title) {
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.panel-card :global(.ant-card-body) {
+  color: #fff;
+}
+
+.panel-card :global(.ant-statistic-title) {
+  color: #8c8c8c;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.panel-card :global(.ant-statistic-content) {
+  color: #fff;
+  font-size: 16px;
+}
+
+.about-card {
+  margin-top: auto;
+}
+
+.about-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.about-icon {
+  font-size: 32px;
+}
+
+.about-title {
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.about-version {
+  color: #8c8c8c;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.about-website {
+  color: #8c8c8c;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.about-copyright {
+  color: #8c8c8c;
+  font-size: 11px;
+}
+

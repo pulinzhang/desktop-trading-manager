@@ -1,0 +1,48 @@
+.trade-table-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.trade-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #303030;
+}
+
+.trade-table-header h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.trade-table {
+  flex: 1;
+  overflow: auto;
+}
+
+.trade-table :global(.ant-table) {
+  background: transparent;
+}
+
+.trade-table :global(.ant-table-thead > tr > th) {
+  background: #1f1f1f;
+  color: #fff;
+  border-bottom: 1px solid #303030;
+  font-weight: 500;
+}
+
+.trade-table :global(.ant-table-tbody > tr > td) {
+  background: #141414;
+  color: #fff;
+  border-bottom: 1px solid #303030;
+}
+
+.trade-table :global(.ant-table-tbody > tr:hover > td) {
+  background: #1f1f1f;
+}
+
