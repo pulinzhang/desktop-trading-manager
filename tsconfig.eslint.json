@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src",
+    "electron.vite.config.ts",
+    "vite.config.ts",
+    "**/*.cjs",
+    "**/*.config.ts",
+    "*.config.ts"
+  ]
+}
+
