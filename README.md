@@ -184,3 +184,5 @@ The main and renderer processes communicate via IPC:
 ## License
 
 MIT
+
+![img.png](mainwindow.png)
