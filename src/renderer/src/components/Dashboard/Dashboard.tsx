@@ -9,6 +9,7 @@ import { SessionChart } from '../SessionChart/SessionChart'
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useSessionStore } from '../../store/useSessionStore'
+import type { Session } from '../../../../types'
 import './Dashboard.css'
 
 const { Content } = Layout
@@ -36,7 +37,7 @@ export function Dashboard({ isDark, setIsDark }: DashboardProps) {
         const currentSettings = await window.electronAPI.getSettings(user.id)
         if (currentSettings) {
           const sessions = await window.electronAPI.getSessions(user.id)
-          const activeSession = sessions.find((s: any) => s.is_active === 1)
+          const activeSession = sessions.find((session: Session) => session.is_active === 1)
           if (!activeSession) {
             await createSession(user.id, currentSettings.initial_capital, currentSettings.currency)
           }
@@ -62,11 +63,7 @@ export function Dashboard({ isDark, setIsDark }: DashboardProps) {
             <span style={{ color: isDark ? '#fff' : '#000', fontSize: '14px' }}>
               {t('session.chart')}
             </span>
-            <Switch
-              checked={showChart}
-              onChange={setShowChart}
-              size="small"
-            />
+            <Switch checked={showChart} onChange={setShowChart} size="small" />
           </Space>
           <Button
             type="text"
@@ -87,7 +84,15 @@ export function Dashboard({ isDark, setIsDark }: DashboardProps) {
           </Button>
         </Space>
       </div>
-      <Content style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', height: 'calc(100vh - 64px)' }}>
+      <Content
+        style={{
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          height: 'calc(100vh - 64px)'
+        }}
+      >
         {showChart && (
           <div style={{ flex: '0 0 auto' }}>
             <SessionChart isDark={isDark} />
@@ -108,4 +113,3 @@ export function Dashboard({ isDark, setIsDark }: DashboardProps) {
     </Layout>
   )
 }
-

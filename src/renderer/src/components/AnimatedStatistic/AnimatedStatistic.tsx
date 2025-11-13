@@ -50,11 +50,7 @@ export function AnimatedStatistic({ value, duration = 800, ...props }: AnimatedS
 
   return (
     <div className={isAnimating ? 'statistic-animating' : ''}>
-      <Statistic
-        {...props}
-        value={formatValue(displayValue)}
-      />
+      <Statistic {...props} value={formatValue(displayValue)} />
     </div>
   )
 }
-

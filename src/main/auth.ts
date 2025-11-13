@@ -12,9 +12,11 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 export async function registerUser(email: string, password: string): Promise<User> {
   const db = getDatabase()
-  
+
   // Check if the user already exists
-  const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined
+  const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as
+    | User
+    | undefined
   if (existingUser) {
     throw new Error('User already exists')
   }
@@ -35,7 +37,7 @@ export async function registerUser(email: string, password: string): Promise<Use
       auto_log_session, auto_count_session, currency
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
-  
+
   settingsStmt.run(
     newUser.id,
     18000, // initial_capital
@@ -69,28 +71,41 @@ export async function loginUser(email: string, password: string): Promise<User |
 
 export async function getUserSettings(userId: number): Promise<UserSettings | null> {
   const db = getDatabase()
-  const settings = db.prepare('SELECT * FROM user_settings WHERE user_id = ?').get(userId) as UserSettings | undefined
+  const settings = db.prepare('SELECT * FROM user_settings WHERE user_id = ?').get(userId) as
+    | UserSettings
+    | undefined
   return settings || null
 }
 
-export async function updateUserSettings(userId: number, updates: Partial<UserSettings>): Promise<UserSettings> {
+export async function updateUserSettings(
+  userId: number,
+  updates: Partial<UserSettings>
+): Promise<UserSettings> {
   const db = getDatabase()
-  
+
   const allowedFields = [
-    'initial_capital', 'risk_percent', 'recovery_multiplier',
-    'daily_profit_target_percent', 'daily_goal_format', 'stop_loss_alert_percent',
-    'session_end_alert', 'low_trade_alert', 'auto_copy_balance',
-    'auto_log_session', 'auto_count_session', 'currency'
+    'initial_capital',
+    'risk_percent',
+    'recovery_multiplier',
+    'daily_profit_target_percent',
+    'daily_goal_format',
+    'stop_loss_alert_percent',
+    'session_end_alert',
+    'low_trade_alert',
+    'auto_copy_balance',
+    'auto_log_session',
+    'auto_count_session',
+    'currency'
   ]
-  
-  const fields = Object.keys(updates).filter(key => allowedFields.includes(key))
-  
+
+  const fields = Object.keys(updates).filter((key) => allowedFields.includes(key))
+
   if (fields.length === 0) {
     throw new Error('No valid fields provided for update')
   }
 
-  const setClause = fields.map(field => `${field} = ?`).join(', ')
-  const values = fields.map(field => {
+  const setClause = fields.map((field) => `${field} = ?`).join(', ')
+  const values = fields.map((field) => {
     const value = updates[field as keyof UserSettings]
     // Persist booleans as integers
     if (typeof value === 'boolean') {
@@ -100,10 +115,13 @@ export async function updateUserSettings(userId: number, updates: Partial<UserSe
   })
   values.push(userId)
 
-  const stmt = db.prepare(`UPDATE user_settings SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`)
+  const stmt = db.prepare(
+    `UPDATE user_settings SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`
+  )
   stmt.run(...values)
 
-  const updatedSettings = db.prepare('SELECT * FROM user_settings WHERE user_id = ?').get(userId) as UserSettings
+  const updatedSettings = db
+    .prepare('SELECT * FROM user_settings WHERE user_id = ?')
+    .get(userId) as UserSettings
   return updatedSettings
 }
-

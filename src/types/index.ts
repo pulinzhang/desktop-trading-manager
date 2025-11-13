@@ -81,4 +81,3 @@ export interface TradeCalculationParams {
   recoveryMultiplier: number
   payoutPercent: number
 }
-

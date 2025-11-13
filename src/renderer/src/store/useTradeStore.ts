@@ -5,7 +5,7 @@ interface TradeStore {
   trades: Trade[]
   loading: boolean
   error: string | null
-  
+
   // Actions
   fetchTrades: (userId: number, sessionId?: number) => Promise<void>
   addTrade: (trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
@@ -14,7 +14,7 @@ interface TradeStore {
   clearTrades: (userId: number, sessionId?: number) => Promise<void>
 }
 
-export const useTradeStore = create<TradeStore>((set, get) => ({
+export const useTradeStore = create<TradeStore>((set, _get) => ({
   trades: [],
   loading: false,
   error: null,
@@ -25,7 +25,10 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
       const trades = await window.electronAPI.getTrades(userId, sessionId)
       set({ trades, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to fetch trades', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to fetch trades',
+        loading: false
+      })
     }
   },
 
@@ -38,7 +41,10 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         loading: false
       }))
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to create trade', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to create trade',
+        loading: false
+      })
       throw error
     }
   },
@@ -54,7 +60,10 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         }))
       }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to update trade', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to update trade',
+        loading: false
+      })
       throw error
     }
   },
@@ -68,7 +77,10 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         loading: false
       }))
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to delete trade', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to delete trade',
+        loading: false
+      })
       throw error
     }
   },
@@ -79,7 +91,10 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
       await window.electronAPI.clearTrades(userId, sessionId)
       set({ trades: [], loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to clear trades', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to clear trades',
+        loading: false
+      })
       throw error
     }
   }

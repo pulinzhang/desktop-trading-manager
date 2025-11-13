@@ -47,4 +47,3 @@ export class RiskService {
     return trades.reduce((sum, trade) => sum + trade.profit_loss, 0)
   }
 }
-

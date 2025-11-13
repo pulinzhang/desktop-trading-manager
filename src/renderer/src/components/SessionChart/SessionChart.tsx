@@ -1,6 +1,15 @@
 import { useEffect } from 'react'
 import { Card } from 'antd'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts'
 import { useSessionStore } from '../../store/useSessionStore'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useTranslation } from 'react-i18next'
@@ -48,23 +57,15 @@ export function SessionChart({ isDark = true }: SessionChartProps) {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis 
-            dataKey="date" 
+          <XAxis dataKey="date" stroke={axisColor} tick={{ fill: textColor }} />
+          <YAxis yAxisId="left" stroke={axisColor} tick={{ fill: textColor }} />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
             stroke={axisColor}
             tick={{ fill: textColor }}
           />
-          <YAxis 
-            yAxisId="left" 
-            stroke={axisColor}
-            tick={{ fill: textColor }}
-          />
-          <YAxis 
-            yAxisId="right" 
-            orientation="right" 
-            stroke={axisColor}
-            tick={{ fill: textColor }}
-          />
-          <Tooltip 
+          <Tooltip
             contentStyle={{
               backgroundColor: isDark ? '#1f1f1f' : '#fff',
               border: `1px solid ${gridColor}`,
@@ -72,9 +73,7 @@ export function SessionChart({ isDark = true }: SessionChartProps) {
             }}
             labelStyle={{ color: textColor }}
           />
-          <Legend 
-            wrapperStyle={{ color: textColor }}
-          />
+          <Legend wrapperStyle={{ color: textColor }} />
           <Line
             yAxisId="left"
             type="monotone"
@@ -98,4 +97,3 @@ export function SessionChart({ isDark = true }: SessionChartProps) {
     </Card>
   )
 }
-

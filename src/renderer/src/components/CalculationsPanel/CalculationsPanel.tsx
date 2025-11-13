@@ -22,22 +22,22 @@ export function CalculationsPanel() {
   }
 
   const totalTrades = trades.length
-  const winTrades = trades.filter(t => t.result === 'win').length
-  const lossTrades = trades.filter(t => t.result === 'loss').length
+  const winTrades = trades.filter((t) => t.result === 'win').length
+  const lossTrades = trades.filter((t) => t.result === 'loss').length
   const winRate = totalTrades > 0 ? (winTrades / totalTrades) * 100 : 0
   const payoutPercent = activeSession.payout_percent || 92
 
-  const currentBalance = trades.length > 0 
-    ? trades[trades.length - 1].current_balance 
-    : activeSession.initial_capital
+  const currentBalance =
+    trades.length > 0 ? trades[trades.length - 1].current_balance : activeSession.initial_capital
 
   const capitalFinal = currentBalance
-  const accountGain = activeSession.initial_capital > 0
-    ? ((capitalFinal - activeSession.initial_capital) / activeSession.initial_capital) * 100
-    : 0
+  const accountGain =
+    activeSession.initial_capital > 0
+      ? ((capitalFinal - activeSession.initial_capital) / activeSession.initial_capital) * 100
+      : 0
 
   const winProfit = trades
-    .filter(t => t.result === 'win')
+    .filter((t) => t.result === 'win')
     .reduce((sum, t) => sum + t.return_amount, 0)
 
   const stopLoss = activeSession.stop_loss || activeSession.initial_capital * 0.8
@@ -76,10 +76,7 @@ export function CalculationsPanel() {
             />
           </Col>
           <Col span={24}>
-            <Statistic
-              title={t('calculations.currency')}
-              value={activeSession.currency}
-            />
+            <Statistic title={t('calculations.currency')} value={activeSession.currency} />
           </Col>
         </Row>
       </Card>

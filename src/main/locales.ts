@@ -46,4 +46,3 @@ export const menuTranslations = {
 export function getMenuTranslations(lang: string = 'zh') {
   return menuTranslations[lang as keyof typeof menuTranslations] || menuTranslations.zh
 }
-

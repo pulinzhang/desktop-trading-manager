@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Form, Input, Button, Card, message, Tabs } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons'
+import { LockOutlined, MailOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../store/useAuthStore'
 import './Login.css'
@@ -32,7 +32,7 @@ export function Login() {
           <h1>{t('login.title')}</h1>
           <p>{t('login.version')}</p>
         </div>
-        
+
         <Tabs
           className="login-tabs"
           activeKey={isLogin ? 'login' : 'register'}
@@ -40,21 +40,16 @@ export function Login() {
           items={[
             {
               key: 'login',
-              label: t('common.login'),
+              label: t('common.login')
             },
             {
               key: 'register',
-              label: t('common.register'),
-            },
+              label: t('common.register')
+            }
           ]}
         />
 
-        <Form
-          form={form}
-          onFinish={handleSubmit}
-          layout="vertical"
-          size="large"
-        >
+        <Form form={form} onFinish={handleSubmit} layout="vertical" size="large">
           <Form.Item
             name="email"
             rules={[
@@ -62,10 +57,7 @@ export function Login() {
               { type: 'email', message: t('login.emailInvalid') }
             ]}
           >
-            <Input
-              prefix={<MailOutlined />}
-              placeholder={t('common.email')}
-            />
+            <Input prefix={<MailOutlined />} placeholder={t('common.email')} />
           </Form.Item>
 
           <Form.Item
@@ -75,23 +67,13 @@ export function Login() {
               { min: 6, message: t('login.passwordMinLength') }
             ]}
           >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder={t('common.password')}
-            />
+            <Input.Password prefix={<LockOutlined />} placeholder={t('common.password')} />
           </Form.Item>
 
-          {error && (
-            <div className="error-message">{error}</div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              block
-            >
+            <Button type="primary" htmlType="submit" loading={loading} block>
               {isLogin ? t('common.login') : t('common.register')}
             </Button>
           </Form.Item>
@@ -105,4 +87,3 @@ export function Login() {
     </div>
   )
 }
-

@@ -43,7 +43,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       // Load user settings
       await get().loadSettings()
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : i18n.t('login.loginFailed'), loading: false })
+      set({
+        error: error instanceof Error ? error.message : i18n.t('login.loginFailed'),
+        loading: false
+      })
       throw error
     }
   },
@@ -57,7 +60,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       // Load user settings
       await get().loadSettings()
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : i18n.t('login.registerFailed'), loading: false })
+      set({
+        error: error instanceof Error ? error.message : i18n.t('login.registerFailed'),
+        loading: false
+      })
       throw error
     }
   },
@@ -93,4 +99,3 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   }
 }))
-

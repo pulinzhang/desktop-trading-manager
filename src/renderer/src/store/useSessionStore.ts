@@ -6,7 +6,7 @@ interface SessionStore {
   sessions: Session[]
   loading: boolean
   error: string | null
-  
+
   // Actions
   fetchActiveSession: (userId: number) => Promise<void>
   fetchSessions: (userId: number) => Promise<void>
@@ -27,7 +27,10 @@ export const useSessionStore = create<SessionStore>((set) => ({
       const session = await window.electronAPI.getActiveSession(userId)
       set({ activeSession: session, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to fetch session', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to fetch session',
+        loading: false
+      })
     }
   },
 
@@ -37,7 +40,10 @@ export const useSessionStore = create<SessionStore>((set) => ({
       const sessions = await window.electronAPI.getSessions(userId)
       set({ sessions, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to fetch sessions', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to fetch sessions',
+        loading: false
+      })
     }
   },
 
@@ -47,7 +53,10 @@ export const useSessionStore = create<SessionStore>((set) => ({
       const newSession = await window.electronAPI.createSession(userId, initialCapital, currency)
       set({ activeSession: newSession, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to create session', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to create session',
+        loading: false
+      })
       throw error
     }
   },
@@ -58,13 +67,17 @@ export const useSessionStore = create<SessionStore>((set) => ({
       const updatedSession = await window.electronAPI.updateSession(sessionId, updates)
       if (updatedSession) {
         set((state) => ({
-          activeSession: state.activeSession?.id === sessionId ? updatedSession : state.activeSession,
+          activeSession:
+            state.activeSession?.id === sessionId ? updatedSession : state.activeSession,
           sessions: state.sessions.map((s) => (s.id === sessionId ? updatedSession : s)),
           loading: false
         }))
       }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to update session', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to update session',
+        loading: false
+      })
       throw error
     }
   },
@@ -75,8 +88,10 @@ export const useSessionStore = create<SessionStore>((set) => ({
       await window.electronAPI.resetSessionCounter(userId)
       set({ loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to reset session counter', loading: false })
+      set({
+        error: error instanceof Error ? error.message : 'Failed to reset session counter',
+        loading: false
+      })
     }
   }
 }))
-

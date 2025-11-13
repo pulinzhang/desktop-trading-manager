@@ -40,8 +40,12 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
       const values = await form.validateFields()
       const tradeData = {
         ...values,
-        entry_time: values.entry_time ? (values.entry_time as Dayjs).format('YYYY-MM-DD HH:mm:ss') : new Date().toISOString(),
-        exit_time: values.exit_time ? (values.exit_time as Dayjs).format('YYYY-MM-DD HH:mm:ss') : null
+        entry_time: values.entry_time
+          ? (values.entry_time as Dayjs).format('YYYY-MM-DD HH:mm:ss')
+          : new Date().toISOString(),
+        exit_time: values.exit_time
+          ? (values.exit_time as Dayjs).format('YYYY-MM-DD HH:mm:ss')
+          : null
       }
 
       if (trade) {
@@ -114,10 +118,7 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
           />
         </Form.Item>
 
-        <Form.Item
-          label={t('trade.exitPrice')}
-          name="exit_price"
-        >
+        <Form.Item label={t('trade.exitPrice')} name="exit_price">
           <InputNumber
             style={{ width: '100%' }}
             placeholder={t('trade.exitPricePlaceholder')}
@@ -131,22 +132,11 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
           name="entry_time"
           rules={[{ required: true, message: t('trade.entryTimeRequired') }]}
         >
-          <DatePicker
-            style={{ width: '100%' }}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-          />
+          <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
 
-        <Form.Item
-          label={t('trade.exitTime')}
-          name="exit_time"
-        >
-          <DatePicker
-            style={{ width: '100%' }}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-          />
+        <Form.Item label={t('trade.exitTime')} name="exit_time">
+          <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
 
         <Form.Item
@@ -160,10 +150,7 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label={t('trade.profitLoss')}
-          name="profit_loss"
-        >
+        <Form.Item label={t('trade.profitLoss')} name="profit_loss">
           <InputNumber
             style={{ width: '100%' }}
             placeholder={t('trade.profitLossPlaceholder')}
@@ -171,10 +158,7 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
           />
         </Form.Item>
 
-        <Form.Item
-          label={t('trade.riskAmount')}
-          name="risk_amount"
-        >
+        <Form.Item label={t('trade.riskAmount')} name="risk_amount">
           <InputNumber
             style={{ width: '100%' }}
             placeholder={t('trade.riskAmountPlaceholder')}
@@ -183,14 +167,10 @@ export function TradeForm({ open, trade, onCancel, onSuccess }: TradeFormProps) 
           />
         </Form.Item>
 
-        <Form.Item
-          label={t('trade.notes')}
-          name="notes"
-        >
+        <Form.Item label={t('trade.notes')} name="notes">
           <Input.TextArea rows={3} placeholder={t('trade.notesPlaceholder')} />
         </Form.Item>
       </Form>
     </Modal>
   )
 }
-

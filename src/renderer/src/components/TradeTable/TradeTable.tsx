@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Table, Button, Select, Popconfirm, message } from 'antd'
+import { useEffect } from 'react'
+import { Table, Button, Select, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useTranslation } from 'react-i18next'
 import { useTradeStore } from '../../store/useTradeStore'
@@ -13,7 +13,6 @@ export function TradeTable() {
   const { user } = useAuthStore()
   const { activeSession } = useSessionStore()
   const { trades, loading, fetchTrades, updateTrade, clearTrades } = useTradeStore()
-  const [editingId, setEditingId] = useState<number | null>(null)
 
   useEffect(() => {
     if (user && activeSession) {
@@ -25,7 +24,7 @@ export function TradeTable() {
     if (!user || !activeSession) return
 
     try {
-      const trade = trades.find(t => t.id === tradeId)
+      const trade = trades.find((t) => t.id === tradeId)
       if (!trade) return
 
       // Compute the return
@@ -45,7 +44,7 @@ export function TradeTable() {
       })
 
       // Update balances for subsequent trades
-      const tradeIndex = trades.findIndex(t => t.id === tradeId)
+      const tradeIndex = trades.findIndex((t) => t.id === tradeId)
       if (tradeIndex >= 0) {
         const subsequentTrades = trades.slice(tradeIndex + 1)
         let runningBalance = newBalance
@@ -56,7 +55,7 @@ export function TradeTable() {
           })
         }
       }
-      
+
       // Refresh trades to update the table
       await fetchTrades(user.id, activeSession.id)
 
@@ -95,8 +94,6 @@ export function TradeTable() {
         <Select
           value={result}
           onChange={(value) => handleResultChange(record.id, value)}
-          onFocus={() => setEditingId(record.id)}
-          onBlur={() => setEditingId(null)}
           style={{ width: '100%' }}
           suffixIcon={null}
         >

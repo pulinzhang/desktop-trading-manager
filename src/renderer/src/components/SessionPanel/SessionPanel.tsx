@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Card, Button, InputNumber, Select, Switch, Statistic, Row, Col, Space, message, Modal } from 'antd'
+import {
+  Card,
+  Button,
+  InputNumber,
+  Select,
+  Switch,
+  Statistic,
+  Row,
+  Col,
+  Space,
+  message,
+  Modal
+} from 'antd'
 import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, ExportOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../store/useAuthStore'
@@ -14,7 +26,14 @@ interface SessionPanelProps {
 export function SessionPanel({ isDark }: SessionPanelProps) {
   const { t } = useTranslation()
   const { user, settings, updateSettings } = useAuthStore()
-  const { activeSession, sessions, createSession, updateSession, fetchActiveSession, fetchSessions } = useSessionStore()
+  const {
+    activeSession,
+    sessions,
+    createSession,
+    updateSession,
+    fetchActiveSession,
+    fetchSessions
+  } = useSessionStore()
   const { trades, addTrade, fetchTrades } = useTradeStore()
 
   const [sessionNumber, setSessionNumber] = useState(1)
@@ -27,14 +46,14 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     if (user) {
       fetchSessions(user.id)
     }
-  }, [user])
+  }, [user, fetchSessions])
 
   useEffect(() => {
     if (user && activeSession) {
       setSessionNumber(activeSession.session_number)
       fetchTrades(user.id, activeSession.id)
     }
-  }, [user, activeSession])
+  }, [user, activeSession, fetchTrades])
 
   useEffect(() => {
     // Initialize the new session capital from user settings
@@ -47,16 +66,18 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     if (activeSession && settings && trades.length > 0) {
       // Auto-calculate the next trade amount
       const lastTrade = trades[trades.length - 1]
-      window.electronAPI.calculateNextTradeAmount({
-        currentBalance: lastTrade.current_balance,
-        previousTradeAmount: lastTrade.trade_amount,
-        previousResult: lastTrade.result,
-        riskPercent: settings.risk_percent,
-        recoveryMultiplier: settings.recovery_multiplier,
-        payoutPercent: activeSession.payout_percent || 92
-      }).then(amount => {
-        setNewTradeAmount(amount)
-      })
+      window.electronAPI
+        .calculateNextTradeAmount({
+          currentBalance: lastTrade.current_balance,
+          previousTradeAmount: lastTrade.trade_amount,
+          previousResult: lastTrade.result,
+          riskPercent: settings.risk_percent,
+          recoveryMultiplier: settings.recovery_multiplier,
+          payoutPercent: activeSession.payout_percent || 92
+        })
+        .then((amount) => {
+          setNewTradeAmount(amount)
+        })
     } else if (activeSession && settings) {
       // First trade: use the risk percentage
       const currentBalance = activeSession.initial_capital
@@ -94,26 +115,23 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     if (!activeSession) return null
 
     const lastTrade = trades.length > 0 ? trades[trades.length - 1] : null
-    const currentBalance = lastTrade
-      ? lastTrade.current_balance 
-      : activeSession.initial_capital
-    
+    const currentBalance = lastTrade ? lastTrade.current_balance : activeSession.initial_capital
+
     const totalTrades = trades.length
-    const completedTrades = trades.filter(t => t.result !== null).length
-    const winTrades = trades.filter(t => t.result === 'win').length
-    const lossTrades = trades.filter(t => t.result === 'loss').length
-    
+    const completedTrades = trades.filter((t) => t.result !== null).length
+    const winTrades = trades.filter((t) => t.result === 'win').length
+    const lossTrades = trades.filter((t) => t.result === 'loss').length
+
     const totalProfit = trades
-      .filter(t => t.result === 'win')
+      .filter((t) => t.result === 'win')
       .reduce((sum, t) => sum + (t.return_amount - t.trade_amount), 0)
     const totalLoss = trades
-      .filter(t => t.result === 'loss')
+      .filter((t) => t.result === 'loss')
       .reduce((sum, t) => sum + t.trade_amount, 0)
-    
+
     const netProfit = totalProfit - totalLoss
-    const profitPercent = activeSession.initial_capital > 0 
-      ? (netProfit / activeSession.initial_capital) * 100 
-      : 0
+    const profitPercent =
+      activeSession.initial_capital > 0 ? (netProfit / activeSession.initial_capital) * 100 : 0
 
     return {
       currentBalance,
@@ -133,9 +151,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     try {
       const sequenceNumber = trades.length + 1
       const lastTrade = trades.length > 0 ? trades[trades.length - 1] : null
-      const currentBalance = lastTrade 
-        ? lastTrade.current_balance 
-        : activeSession.initial_capital
+      const currentBalance = lastTrade ? lastTrade.current_balance : activeSession.initial_capital
 
       await addTrade({
         user_id: user.id,
@@ -172,24 +188,21 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
       }
 
       // Find the target session number
-      const targetSession = sessionsList.find(s => s.session_number === newNumber)
-      
+      const targetSession = sessionsList.find((s) => s.session_number === newNumber)
+
       if (targetSession) {
         // Mark every session as inactive
         const updatePromises = sessionsList
-          .filter(s => s.is_active)
-          .map(s => updateSession(s.id, { is_active: false }))
+          .filter((s) => s.is_active)
+          .map((s) => updateSession(s.id, { is_active: false }))
         await Promise.all(updatePromises)
 
         // Activate the requested session
         await updateSession(targetSession.id, { is_active: true })
 
         // Refresh active session and session list
-        await Promise.all([
-          fetchActiveSession(user.id),
-          fetchSessions(user.id)
-        ])
-        
+        await Promise.all([fetchActiveSession(user.id), fetchSessions(user.id)])
+
         message.success(t('session.sessionSwitched', { number: newNumber }))
       } else {
         message.warning(t('session.sessionNotFound', { number: newNumber }))
@@ -221,14 +234,42 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     }
   }
 
-  const dailyProfitTarget = settings?.daily_profit_target_percent || 2
-  const sessionsRequired = Math.ceil(dailyProfitTarget / (settings?.risk_percent || 2))
-  const accountGain = activeSession 
-    ? ((activeSession.capital_final || activeSession.initial_capital) - activeSession.initial_capital) / activeSession.initial_capital * 100
+  const dailyGoalFormat = settings?.daily_goal_format || '%'
+  const dailyProfitTargetPercent = settings?.daily_profit_target_percent ?? 2
+  const initialCapitalBase = (activeSession?.initial_capital ?? settings?.initial_capital) || 0
+  const dailyProfitTargetValue =
+    dailyGoalFormat === '%'
+      ? dailyProfitTargetPercent
+      : (initialCapitalBase * dailyProfitTargetPercent) / 100
+
+  const sessionsRequired = Math.ceil(dailyProfitTargetPercent / (settings?.risk_percent || 2))
+  const accountGain = activeSession
+    ? (((activeSession.capital_final || activeSession.initial_capital) -
+        activeSession.initial_capital) /
+        activeSession.initial_capital) *
+      100
     : 0
   const capitalFinal = activeSession
-    ? (dailyProfitTarget / 100) * activeSession.initial_capital + activeSession.initial_capital
+    ? (dailyProfitTargetPercent / 100) * activeSession.initial_capital +
+      activeSession.initial_capital
     : 0
+
+  const handleProfitTargetChange = (value: number | null) => {
+    if (!settings || value === null || Number.isNaN(value)) return
+
+    if (dailyGoalFormat === '%') {
+      updateSettings({ daily_profit_target_percent: value })
+      return
+    }
+
+    if (initialCapitalBase <= 0) {
+      updateSettings({ daily_profit_target_percent: 0 })
+      return
+    }
+
+    const percentValue = (value / initialCapitalBase) * 100
+    updateSettings({ daily_profit_target_percent: Number(percentValue.toFixed(4)) })
+  }
 
   return (
     <div className={`session-panel ${isDark ? 'dark' : 'light'}`}>
@@ -244,7 +285,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
           >
             + {t('session.newSession')}
           </Button>
-          
+
           <Space>
             <Button size="small">{t('session.logSession')}</Button>
             <Button size="small">CB</Button>
@@ -282,18 +323,23 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
             <div className="setting-item">
               <span>{t('session.profitTarget')}:</span>
               <InputNumber
-                value={dailyProfitTarget}
+                value={Number(dailyProfitTargetValue.toFixed(dailyGoalFormat === '%' ? 1 : 2))}
                 min={0}
-                max={100}
-                precision={1}
-                suffix="%"
-                size="small"
-                style={{ width: 100 }}
-                onChange={(value) => {
-                  if (value && settings) {
-                    updateSettings({ daily_profit_target_percent: value })
-                  }
+                max={dailyGoalFormat === '%' ? 100 : undefined}
+                precision={dailyGoalFormat === '%' ? 1 : 2}
+                formatter={(val) => {
+                  if (val === undefined || val === null) return ''
+                  const numeric = typeof val === 'number' ? val : parseFloat(val)
+                  if (Number.isNaN(numeric)) return ''
+                  return dailyGoalFormat === '%' ? `${numeric}%` : `$ ${numeric}`
                 }}
+                parser={(val) => {
+                  if (!val) return 0
+                  return Number(val.replace(/[^0-9.]/g, ''))
+                }}
+                size="small"
+                style={{ width: 120 }}
+                onChange={handleProfitTargetChange}
               />
             </div>
           </Col>
@@ -316,10 +362,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
             </div>
           </Col>
           <Col span={24}>
-            <Statistic
-              title={t('session.sessionsRequired')}
-              value={sessionsRequired}
-            />
+            <Statistic title={t('session.sessionsRequired')} value={sessionsRequired} />
           </Col>
           <Col span={24}>
             <Statistic
@@ -426,12 +469,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
         {t('session.addTrade')}
       </Button>
 
-      <Button
-        icon={<ExportOutlined />}
-        onClick={handleExport}
-        block
-        style={{ marginTop: 8 }}
-      >
+      <Button icon={<ExportOutlined />} onClick={handleExport} block style={{ marginTop: 8 }}>
         {t('session.exportCSV')}
       </Button>
 
@@ -444,9 +482,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
         cancelText={t('common.cancel')}
       >
         <div style={{ marginBottom: 16 }}>
-          <label
-            style={{ display: 'block', marginBottom: 8, color: isDark ? '#fff' : '#000' }}
-          >
+          <label style={{ display: 'block', marginBottom: 8, color: isDark ? '#fff' : '#000' }}>
             {t('session.tradeAmount')}:
           </label>
           <InputNumber
@@ -489,10 +525,12 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
                     value={getCurrentSessionStats()?.currentBalance}
                     prefix="$"
                     precision={2}
-                    valueStyle={{ 
-                      color: (getCurrentSessionStats()?.currentBalance || 0) >= (getCurrentSessionStats()?.initialCapital || 0) 
-                        ? '#52c41a' 
-                        : '#ff4d4f' 
+                    valueStyle={{
+                      color:
+                        (getCurrentSessionStats()?.currentBalance || 0) >=
+                        (getCurrentSessionStats()?.initialCapital || 0)
+                          ? '#52c41a'
+                          : '#ff4d4f'
                     }}
                   />
                 </Col>
@@ -528,8 +566,8 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
                     value={getCurrentSessionStats()?.netProfit}
                     prefix="$"
                     precision={2}
-                    valueStyle={{ 
-                      color: (getCurrentSessionStats()?.netProfit || 0) >= 0 ? '#52c41a' : '#ff4d4f' 
+                    valueStyle={{
+                      color: (getCurrentSessionStats()?.netProfit || 0) >= 0 ? '#52c41a' : '#ff4d4f'
                     }}
                   />
                 </Col>
@@ -539,15 +577,16 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
                     value={getCurrentSessionStats()?.profitPercent}
                     suffix="%"
                     precision={2}
-                    valueStyle={{ 
-                      color: (getCurrentSessionStats()?.profitPercent || 0) >= 0 ? '#52c41a' : '#ff4d4f' 
+                    valueStyle={{
+                      color:
+                        (getCurrentSessionStats()?.profitPercent || 0) >= 0 ? '#52c41a' : '#ff4d4f'
                     }}
                   />
                 </Col>
               </Row>
             </Card>
           )}
-          
+
           <div>
             <label
               style={{
@@ -567,7 +606,6 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
               precision={2}
               min={0}
               size="large"
-              autoFocus
             />
             <div
               style={{
@@ -584,4 +622,3 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     </div>
   )
 }
-

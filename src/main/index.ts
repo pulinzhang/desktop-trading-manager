@@ -34,6 +34,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    //mainWindow.setFullScreen(true)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -53,7 +54,7 @@ function createWindow(): void {
 // Build the application menu
 function createMenu(lang: string = 'zh'): void {
   const t = getMenuTranslations(lang)
-  
+
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: t.file,
@@ -166,4 +167,3 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   closeDatabase()
 })
-

@@ -16,20 +16,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Trades API
   getTrades: (userId: number, sessionId?: number): Promise<Trade[]> =>
     ipcRenderer.invoke('db:getTrades', userId, sessionId),
-  getTrade: (id: number): Promise<Trade | null> =>
-    ipcRenderer.invoke('db:getTrade', id),
+  getTrade: (id: number): Promise<Trade | null> => ipcRenderer.invoke('db:getTrade', id),
   createTrade: (trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>): Promise<Trade> =>
     ipcRenderer.invoke('db:createTrade', trade),
   updateTrade: (id: number, updates: Partial<Trade>): Promise<Trade | null> =>
     ipcRenderer.invoke('db:updateTrade', id, updates),
-  deleteTrade: (id: number): Promise<boolean> =>
-    ipcRenderer.invoke('db:deleteTrade', id),
+  deleteTrade: (id: number): Promise<boolean> => ipcRenderer.invoke('db:deleteTrade', id),
   clearTrades: (userId: number, sessionId?: number): Promise<boolean> =>
     ipcRenderer.invoke('db:clearTrades', userId, sessionId),
 
   // Sessions API
-  getSessions: (userId: number): Promise<Session[]> =>
-    ipcRenderer.invoke('db:getSessions', userId),
+  getSessions: (userId: number): Promise<Session[]> => ipcRenderer.invoke('db:getSessions', userId),
   getActiveSession: (userId: number): Promise<Session | null> =>
     ipcRenderer.invoke('db:getActiveSession', userId),
   createSession: (userId: number, initialCapital: number, currency?: string): Promise<Session> =>
@@ -47,14 +44,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     riskPercent: number
     recoveryMultiplier: number
     payoutPercent: number
-  }): Promise<number> =>
-    ipcRenderer.invoke('calc:nextTradeAmount', params),
+  }): Promise<number> => ipcRenderer.invoke('calc:nextTradeAmount', params),
   calculateTradeReturn: (params: {
     tradeAmount: number
     result: 'win' | 'loss'
     payoutPercent: number
-  }): Promise<number> =>
-    ipcRenderer.invoke('calc:tradeReturn', params),
+  }): Promise<number> => ipcRenderer.invoke('calc:tradeReturn', params),
 
   // Export API
   exportTrades: (userId: number, sessionId?: number): Promise<string> =>

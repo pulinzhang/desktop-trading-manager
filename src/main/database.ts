@@ -104,4 +104,3 @@ export function closeDatabase(): void {
     console.log('Database connection closed')
   }
 }
-

@@ -37,7 +37,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -102,4 +103,3 @@
   color: #595959;
   margin-top: 10px;
 }
-
