@@ -156,10 +156,11 @@ npm run preview
 
 ## Database
 
-The app stores all data in a SQLite database located in the user data directory:
-- Windows: `%APPDATA%/desktop-trading-manager-app/trades.db`
-- macOS: `~/Library/Application Support/desktop-trading-manager-app/trades.db`
-- Linux: `~/.config/desktop-trading-manager-app/trades.db`
+The app stores all data in a SQLite database under a `database` directory:
+- **Packaged builds:** `database/trades.db` stored next to the application executable
+- **Development runs:** `database/trades.db` stored in the project working directory
+
+Ensure the app has permission to create the `database` directory on first launch.
 
 ## Development
 

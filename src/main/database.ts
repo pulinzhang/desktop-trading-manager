@@ -1,12 +1,19 @@
 import Database from 'better-sqlite3'
-import { join } from 'path'
+import { existsSync, mkdirSync } from 'fs'
+import { dirname, join } from 'path'
 import { app } from 'electron'
 
 let db: Database.Database | null = null
 
 export function initDatabase(): void {
-  const userDataPath = app.getPath('userData')
-  const dbPath = join(userDataPath, 'trades.db')
+  const baseDir = app.isPackaged ? dirname(app.getPath('exe')) : process.cwd()
+  const databaseDir = join(baseDir, 'database')
+
+  if (!existsSync(databaseDir)) {
+    mkdirSync(databaseDir, { recursive: true })
+  }
+
+  const dbPath = join(databaseDir, 'trades.db')
 
   db = new Database(dbPath)
 
