@@ -3,32 +3,32 @@ import { getDatabase } from './database'
 import { registerUser, loginUser, getUserSettings, updateUserSettings } from './auth'
 import type { Trade, Session, User, UserSettings } from '../types'
 
-// 认证相关 IPC 处理器
+// Authentication-related IPC handlers
 export function setupAuthHandlers(): void {
-  // 注册用户
+  // Register user
   ipcMain.handle('auth:register', async (_, email: string, password: string): Promise<User> => {
     return registerUser(email, password)
   })
 
-  // 登录
+  // Sign in
   ipcMain.handle('auth:login', async (_, email: string, password: string): Promise<User | null> => {
     return loginUser(email, password)
   })
 
-  // 获取用户设置
+  // Fetch user settings
   ipcMain.handle('auth:getSettings', async (_, userId: number): Promise<UserSettings | null> => {
     return getUserSettings(userId)
   })
 
-  // 更新用户设置
+  // Update user settings
   ipcMain.handle('auth:updateSettings', async (_, userId: number, updates: Partial<UserSettings>): Promise<UserSettings> => {
     return updateUserSettings(userId, updates)
   })
 }
 
-// 交易相关 IPC 处理器
+// Trade-related IPC handlers
 export function setupTradeHandlers(): void {
-  // 获取用户的所有交易
+  // Fetch all trades for the user
   ipcMain.handle('db:getTrades', async (_, userId: number, sessionId?: number): Promise<Trade[]> => {
     const db = getDatabase()
     if (sessionId) {
@@ -39,7 +39,7 @@ export function setupTradeHandlers(): void {
     return stmt.all(userId) as Trade[]
   })
 
-  // 获取单个交易
+  // Fetch a single trade
   ipcMain.handle('db:getTrade', async (_, id: number): Promise<Trade | null> => {
     const db = getDatabase()
     const stmt = db.prepare('SELECT * FROM trades WHERE id = ?')
@@ -47,7 +47,7 @@ export function setupTradeHandlers(): void {
     return trade || null
   })
 
-  // 创建交易
+  // Create trade
   ipcMain.handle('db:createTrade', async (_, trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>): Promise<Trade> => {
     const db = getDatabase()
     const stmt = db.prepare(`
@@ -69,7 +69,7 @@ export function setupTradeHandlers(): void {
     return newTrade
   })
 
-  // 更新交易
+  // Update trade
   ipcMain.handle('db:updateTrade', async (_, id: number, updates: Partial<Trade>): Promise<Trade | null> => {
     const db = getDatabase()
     
@@ -91,7 +91,7 @@ export function setupTradeHandlers(): void {
     return updatedTrade || null
   })
 
-  // 删除交易
+  // Delete trade
   ipcMain.handle('db:deleteTrade', async (_, id: number): Promise<boolean> => {
     const db = getDatabase()
     const stmt = db.prepare('DELETE FROM trades WHERE id = ?')
@@ -99,7 +99,7 @@ export function setupTradeHandlers(): void {
     return result.changes > 0
   })
 
-  // 删除所有交易（清空）
+  // Delete all trades (clear history)
   ipcMain.handle('db:clearTrades', async (_, userId: number, sessionId?: number): Promise<boolean> => {
     const db = getDatabase()
     if (sessionId) {
@@ -113,16 +113,16 @@ export function setupTradeHandlers(): void {
   })
 }
 
-// 会话相关 IPC 处理器
+// Session-related IPC handlers
 export function setupSessionHandlers(): void {
-  // 获取用户的所有会话
+  // Fetch all sessions for the user
   ipcMain.handle('db:getSessions', async (_, userId: number): Promise<Session[]> => {
     const db = getDatabase()
     const stmt = db.prepare('SELECT * FROM sessions WHERE user_id = ? ORDER BY session_number DESC')
     return stmt.all(userId) as Session[]
   })
 
-  // 获取当前活动会话
+  // Fetch the currently active session
   ipcMain.handle('db:getActiveSession', async (_, userId: number): Promise<Session | null> => {
     const db = getDatabase()
     const stmt = db.prepare('SELECT * FROM sessions WHERE user_id = ? AND is_active = 1 ORDER BY session_number DESC LIMIT 1')
@@ -130,15 +130,15 @@ export function setupSessionHandlers(): void {
     return session || null
   })
 
-  // 创建新会话
+  // Create a new session
   ipcMain.handle('db:createSession', async (_, userId: number, initialCapital: number, currency: string = 'USD'): Promise<Session> => {
     const db = getDatabase()
     
-    // 获取下一个会话号
+    // Compute the next session number
     const lastSession = db.prepare('SELECT MAX(session_number) as max_num FROM sessions WHERE user_id = ?').get(userId) as { max_num: number | null } | undefined
     const nextSessionNumber = (lastSession?.max_num ?? 0) + 1
 
-    // 将之前的会话设为非活动
+    // Mark existing sessions as inactive
     db.prepare('UPDATE sessions SET is_active = 0 WHERE user_id = ?').run(userId)
 
     const date = new Date().toISOString().split('T')[0]
@@ -153,7 +153,7 @@ export function setupSessionHandlers(): void {
     return newSession
   })
 
-  // 更新会话
+  // Update session
   ipcMain.handle('db:updateSession', async (_, sessionId: number, updates: Partial<Session>): Promise<Session | null> => {
     const db = getDatabase()
     
@@ -184,17 +184,17 @@ export function setupSessionHandlers(): void {
     return updatedSession || null
   })
 
-  // 重置会话计数器
+  // Reset session counter
   ipcMain.handle('db:resetSessionCounter', async (_, userId: number): Promise<void> => {
     const db = getDatabase()
-    // 这里可以重置会话计数器，但为了保持历史记录，我们只是创建新会话
-    // 实际实现取决于需求
+    // Intentionally left blank: resetting the counter would impact history
+    // Implement this flow if requirements change
   })
 }
 
-// 计算相关 IPC 处理器
+// Calculation-related IPC handlers
 export function setupCalculationHandlers(): void {
-  // 计算下一个交易金额（用于恢复计划）
+  // Compute the next trade amount (for recovery plans)
   ipcMain.handle('calc:nextTradeAmount', async (_, params: {
     currentBalance: number
     previousTradeAmount: number | null
@@ -205,16 +205,16 @@ export function setupCalculationHandlers(): void {
   }): Promise<number> => {
     const { currentBalance, previousTradeAmount, previousResult, riskPercent, recoveryMultiplier, payoutPercent } = params
 
-    // 如果上一笔是亏损，使用恢复倍数
+    // On a loss, scale by the recovery multiplier
     if (previousResult === 'loss' && previousTradeAmount) {
       return previousTradeAmount * recoveryMultiplier
     }
 
-    // 否则使用风险百分比计算
+    // Otherwise fall back to the risk percentage
     return currentBalance * (riskPercent / 100)
   })
 
-  // 计算交易回报
+  // Compute trade returns
   ipcMain.handle('calc:tradeReturn', async (_, params: {
     tradeAmount: number
     result: 'win' | 'loss'
@@ -230,7 +230,7 @@ export function setupCalculationHandlers(): void {
   })
 }
 
-// 导出数据
+// Data export
 export function setupExportHandlers(): void {
   ipcMain.handle('export:trades', async (_, userId: number, sessionId?: number): Promise<string> => {
     const db = getDatabase()
@@ -244,7 +244,7 @@ export function setupExportHandlers(): void {
       trades = stmt.all(userId) as Trade[]
     }
 
-    // 生成 CSV
+    // Assemble the CSV payload
     const headers = ['NO.', 'RESULT', 'TRADE AMOUNT', 'RETURN', 'CURRENT BALANCE']
     const rows = trades.map((trade, index) => [
       index + 1,
@@ -263,7 +263,7 @@ export function setupExportHandlers(): void {
   })
 }
 
-// 设置所有 IPC 处理器
+// Register every IPC handler
 export function setupIpcHandlers(): void {
   setupAuthHandlers()
   setupTradeHandlers()

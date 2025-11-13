@@ -5,7 +5,7 @@ import { initDatabase, closeDatabase } from './database'
 import { setupIpcHandlers } from './ipc'
 import { getMenuTranslations } from './locales'
 
-// 设置控制台输出编码为 UTF-8 (Windows)
+// Ensure UTF-8 console output on Windows
 if (process.platform === 'win32') {
   process.stdout.setDefaultEncoding('utf8')
   process.stderr.setDefaultEncoding('utf8')
@@ -14,7 +14,7 @@ if (process.platform === 'win32') {
 let currentLanguage = 'zh'
 
 function createWindow(): void {
-  // 创建浏览器窗口
+  // Create the browser window
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -41,7 +41,7 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  // 开发环境加载 Vite dev server，生产环境加载构建文件
+  // Load the Vite dev server in development, packaged files in production
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
     mainWindow.webContents.openDevTools()
@@ -50,7 +50,7 @@ function createWindow(): void {
   }
 }
 
-// 创建应用菜单
+// Build the application menu
 function createMenu(lang: string = 'zh'): void {
   const t = getMenuTranslations(lang)
   
@@ -62,7 +62,7 @@ function createMenu(lang: string = 'zh'): void {
           label: t.newTrade,
           accelerator: 'CmdOrCtrl+N',
           click: () => {
-            // 通过 IPC 发送消息到渲染进程
+            // Notify the renderer process via IPC
             BrowserWindow.getFocusedWindow()?.webContents.send('menu-new-trade')
           }
         },
@@ -107,7 +107,7 @@ function createMenu(lang: string = 'zh'): void {
         {
           label: t.about,
           click: () => {
-            // 可以打开关于对话框
+            // TODO: wire up the About dialog if needed
           }
         }
       ]
@@ -118,7 +118,7 @@ function createMenu(lang: string = 'zh'): void {
   Menu.setApplicationMenu(menu)
 }
 
-// 监听语言变化
+// React to language changes
 function setupLanguageHandler(): void {
   ipcMain.on('language-changed', (_, lang: string) => {
     currentLanguage = lang
@@ -126,26 +126,26 @@ function setupLanguageHandler(): void {
   })
 }
 
-// 应用准备就绪
+// Initialize once the app is ready
 app.whenReady().then(() => {
-  // 设置应用用户模型 ID (Windows)
+  // Set the Windows App User Model ID
   electronApp.setAppUserModelId('com.electron.desktop-trading-manager-app')
 
-  // 默认情况下，在开发中按 F12 打开或关闭 DevTools
+  // In development toggle DevTools with F12
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // 初始化数据库
+  // Initialize the database
   initDatabase()
 
-  // 设置 IPC 处理器
+  // Register IPC handlers
   setupIpcHandlers()
 
-  // 设置语言处理器
+  // Register language handler
   setupLanguageHandler()
 
-  // 创建窗口和菜单
+  // Create the main window and menu
   createWindow()
   createMenu(currentLanguage)
 
@@ -154,7 +154,7 @@ app.whenReady().then(() => {
   })
 })
 
-// 所有窗口关闭时退出应用 (macOS 除外)
+// Quit the app when all windows closed (except on macOS)
 app.on('window-all-closed', () => {
   closeDatabase()
   if (process.platform !== 'darwin') {
@@ -162,7 +162,7 @@ app.on('window-all-closed', () => {
   }
 })
 
-// 应用退出前清理
+// Clean up before quitting
 app.on('before-quit', () => {
   closeDatabase()
 })

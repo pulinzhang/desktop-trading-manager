@@ -4,13 +4,13 @@ import type { Trade, Session, User, UserSettings } from '../../types'
 declare global {
   interface Window {
     electronAPI: {
-      // 认证相关
+      // Authentication
       register: (email: string, password: string) => Promise<User>
       login: (email: string, password: string) => Promise<User | null>
       getSettings: (userId: number) => Promise<UserSettings | null>
       updateSettings: (userId: number, updates: Partial<UserSettings>) => Promise<UserSettings>
 
-      // 交易相关
+      // Trades
       getTrades: (userId: number, sessionId?: number) => Promise<Trade[]>
       getTrade: (id: number) => Promise<Trade | null>
       createTrade: (trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => Promise<Trade>
@@ -18,14 +18,14 @@ declare global {
       deleteTrade: (id: number) => Promise<boolean>
       clearTrades: (userId: number, sessionId?: number) => Promise<boolean>
 
-      // 会话相关
+      // Sessions
       getSessions: (userId: number) => Promise<Session[]>
       getActiveSession: (userId: number) => Promise<Session | null>
       createSession: (userId: number, initialCapital: number, currency?: string) => Promise<Session>
       updateSession: (sessionId: number, updates: Partial<Session>) => Promise<Session | null>
       resetSessionCounter: (userId: number) => Promise<void>
 
-      // 计算相关
+      // Calculations
       calculateNextTradeAmount: (params: {
         currentBalance: number
         previousTradeAmount: number | null
@@ -40,13 +40,13 @@ declare global {
         payoutPercent: number
       }) => Promise<number>
 
-      // 导出
+      // Export
       exportTrades: (userId: number, sessionId?: number) => Promise<string>
 
-      // 菜单事件
+      // Menu events
       onMenuNewTrade: (callback: () => void) => () => void
 
-      // 语言切换
+      // Language switching
       sendLanguageChange: (lang: string) => void
     }
   }

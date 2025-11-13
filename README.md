@@ -1,186 +1,186 @@
 # Desktop Trading Manager App (Risk & Recovery System with Login Protection)
 
-一个基于 Electron + React + TypeScript 的桌面交易管理应用，聚焦风险监控、回撤恢复与登录安全保护。
+A desktop trading management app built with Electron, React, and TypeScript, focused on risk monitoring, drawdown recovery, and secure login protection.
 
-## 功能特性
+## Key Features
 
-- 📊 **交易管理**: 记录和管理所有交易记录
-- 🧮 **风险管理计算器**: 自动计算风险金额、持仓规模和最大持仓数量
-- 📈 **交易统计**: 实时显示总盈亏、胜率、盈利/亏损交易数
-- 📉 **会话图表**: 可视化展示交易会话的账户余额和盈亏趋势
-- 💾 **数据持久化**: 使用 SQLite 数据库本地存储所有数据
-- 🎨 **深色主题**: 现代化的深色界面设计
+- 📊 **Trade management**: Record and manage every trade
+- 🧮 **Risk calculator**: Automatically compute risk amount, position size, and maximum contracts
+- 📈 **Trading analytics**: Display total P&L, win rate, and winning/losing trade counts in real time
+- 📉 **Session charting**: Visualize balance and profit/loss trends across trading sessions
+- 💾 **Data persistence**: Store everything locally in a SQLite database
+- 🎨 **Dark theme**: Modern, accessible UI styling
 
-## 技术栈
+## Tech Stack
 
-- **Electron**: 跨平台桌面应用框架
-- **React 18**: UI 框架
-- **TypeScript**: 类型安全
-- **Vite**: 构建工具
-- **Zustand**: 轻量级状态管理
-- **Ant Design**: UI 组件库
-- **Recharts**: 图表库
-- **better-sqlite3**: SQLite 数据库
+- **Electron**: Cross-platform desktop framework
+- **React 18**: UI library
+- **TypeScript**: Type safety everywhere
+- **Vite**: Fast build tooling
+- **Zustand**: Lightweight state management
+- **Ant Design**: Component library
+- **Recharts**: Charting primitives
+- **better-sqlite3**: SQLite database driver
 
-## 项目结构
+## Project Structure
 
 ```
 trade-app/
 ├── src/
-│   ├── main/              # Electron 主进程
-│   │   ├── index.ts      # 主进程入口
-│   │   ├── database.ts   # 数据库初始化和管理
-│   │   └── ipc.ts        # IPC 通信处理器
-│   ├── preload/          # 预加载脚本
-│   │   └── index.ts      # 暴露 API 给渲染进程
-│   ├── renderer/         # React 渲染进程
+│   ├── main/              # Electron main process
+│   │   ├── index.ts       # Entry point
+│   │   ├── database.ts    # Database setup and management
+│   │   └── ipc.ts         # IPC handlers
+│   ├── preload/           # Preload scripts
+│   │   └── index.ts       # Exposes APIs to renderer
+│   ├── renderer/          # React renderer
 │   │   └── src/
-│   │       ├── components/    # React 组件
-│   │       │   ├── TradeTable/      # 交易表格
-│   │       │   ├── CalculationsPanel/  # 计算面板
-│   │       │   ├── SessionChart/    # 会话图表
-│   │       │   └── TradeForm/       # 交易表单
-│   │       ├── store/          # Zustand 状态管理
-│   │       ├── services/       # 业务服务
-│   │       └── App.tsx         # 主应用组件
-│   └── types/            # TypeScript 类型定义
+│   │       ├── components/     # React components
+│   │       │   ├── TradeTable/       # Trade table
+│   │       │   ├── CalculationsPanel/ # Risk calculator panel
+│   │       │   ├── SessionChart/     # Session chart
+│   │       │   └── TradeForm/        # Trade form
+│   │       ├── store/           # Zustand state store
+│   │       ├── services/        # Business services
+│   │       └── App.tsx          # Root component
+│   └── types/             # Shared TypeScript definitions
 ├── electron.vite.config.ts
 ├── package.json
 └── tsconfig.json
 ```
 
-## 安装和运行
+## Installation & Usage
 
-### Windows 用户注意事项
+### Windows-specific Notes
 
-**重要**: `better-sqlite3` 需要编译原生模块。如果安装失败，请按以下步骤操作：
+**Important**: `better-sqlite3` compiles native bindings. If installation fails, try the steps below.
 
-#### 方案 1: 安装/修复 Visual Studio Build Tools（推荐）
+#### Option 1: Install or repair Visual Studio Build Tools (recommended)
 
-**如果您已经安装了 Visual Studio Build Tools 但仍然失败**，请查看 [FIX-VS-TOOLS.md](./FIX-VS-TOOLS.md) 获取详细修复指南。
+If Visual Studio Build Tools are already installed but you still hit errors, consult [FIX-VS-TOOLS.md](./FIX-VS-TOOLS.md) for detailed fixes.
 
-**首次安装**：
-1. 下载并安装 [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
-2. 在安装时选择 **"Desktop development with C++"** 工作负载
-3. 确保在右侧安装详细信息中选中：
+First-time setup:
+1. Download and install [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022)
+2. Select the **Desktop development with C++** workload
+3. In the install details panel make sure you include:
    - ✅ MSVC v143 - VS 2022 C++ x64/x86 build tools
-   - ✅ Windows 10/11 SDK (最新版本)
-4. 重新运行 `npm install`
+   - ✅ Windows 10/11 SDK (latest)
+4. Run `npm install` again
 
-#### 方案 2: 使用安装脚本（推荐快速方案）
+#### Option 2: Use the automated install script (quickest)
 
-我们提供了一个 PowerShell 安装脚本来帮助您：
+Run the bundled PowerShell script:
 
 ```powershell
-# 以管理员权限运行 PowerShell，然后执行：
+# Run PowerShell as Administrator and execute:
 .\install-windows.ps1
 ```
 
-脚本会自动检测 Visual Studio 并尝试最佳安装方式。
+The script detects Visual Studio setups and attempts the best install path.
 
-#### 方案 3: 手动使用预构建二进制文件
+#### Option 3: Use prebuilt binaries
 
-如果不想安装 Visual Studio，可以尝试使用预构建的二进制文件：
+To avoid installing Visual Studio, you can leverage prebuilt binaries:
 
 ```powershell
-# 设置环境变量使用预构建版本
+# Tell npm to prefer prebuilt binaries
 $env:npm_config_build_from_source="false"
 npm install better-sqlite3 --build-from-source=false
 npm install
 ```
 
-#### 方案 4: 使用管理员权限
+#### Option 4: Run with elevated privileges
 
-有时需要管理员权限来编译原生模块：
+Native builds sometimes require admin rights:
 
-1. 以管理员身份打开 PowerShell 或命令提示符
-2. 运行 `npm install`
+1. Open PowerShell or Command Prompt as Administrator
+2. Execute `npm install`
 
-### 1. 安装依赖
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. 开发模式运行
+### 2. Start the development environment
 
 ```bash
 npm run dev
 ```
 
-### 3. 构建生产版本
+### 3. Build the production bundle
 
 ```bash
 npm run build
 ```
 
-### 4. 预览构建结果
+### 4. Preview the production build
 
 ```bash
 npm run preview
 ```
 
-## 使用说明
+## Using the App
 
-### 创建交易
+### Create a trade
 
-1. 点击右上角的"新建交易"按钮
-2. 填写交易信息：
-   - 交易品种（如：BTC/USDT）
-   - 方向（做多/做空）
-   - 数量
-   - 入场价格
-   - 入场时间
-   - 其他可选信息
-3. 点击"确定"保存
+1. Click the **New Trade** button in the top-right corner
+2. Fill in the trade details:
+   - Instrument (e.g., BTC/USDT)
+   - Direction (long/short)
+   - Quantity
+   - Entry price
+   - Entry time
+   - Optional metadata
+3. Press **Confirm** to save
 
-### 风险管理计算
+### Run a risk calculation
 
-1. 在"风险管理计算器"面板中填写：
-   - 账户余额
-   - 风险百分比（%）
-   - 入场价格
-   - 止损价格
-2. 点击"计算"按钮
-3. 查看计算结果：风险金额、最大持仓数量、持仓规模
+1. In the **Risk Management Calculator** panel enter:
+   - Account balance
+   - Risk percentage (%)
+   - Entry price
+   - Stop-loss price
+2. Click **Calculate**
+3. Review the calculated risk amount, maximum position size, and contract count
 
-### 查看统计
+### Review analytics
 
-- **交易统计面板**显示：
-  - 总盈亏
-  - 胜率
-  - 盈利交易数
-  - 亏损交易数
+- **Trading statistics panel** shows:
+  - Total profit and loss
+  - Win rate
+  - Number of winning trades
+  - Number of losing trades
 
-- **会话图表**显示账户余额和盈亏趋势
+- **Session chart** visualizes balance and profit/loss trends
 
-## 数据库
+## Database
 
-应用使用 SQLite 数据库存储数据，数据库文件位于用户数据目录：
+The app stores all data in a SQLite database located in the user data directory:
 - Windows: `%APPDATA%/desktop-trading-manager-app/trades.db`
 - macOS: `~/Library/Application Support/desktop-trading-manager-app/trades.db`
 - Linux: `~/.config/desktop-trading-manager-app/trades.db`
 
-## 开发
+## Development
 
-### 主进程开发
+### Main process
 
-主进程代码位于 `src/main/`，负责：
-- 窗口管理
-- 数据库操作
-- IPC 通信处理
+Main-process code lives in `src/main/` and handles:
+- Window lifecycle management
+- Database access
+- IPC routing
 
-### 渲染进程开发
+### Renderer process
 
-渲染进程代码位于 `src/renderer/`，使用 React 构建 UI。
+Renderer code is in `src/renderer/`, built with React.
 
-### IPC 通信
+### IPC communication
 
-主进程和渲染进程通过 IPC 通信：
+The main and renderer processes communicate via IPC:
 
-- 渲染进程调用：`window.electronAPI.methodName()`
-- 主进程处理：在 `src/main/ipc.ts` 中定义处理器
+- Renderer calls: `window.electronAPI.methodName()`
+- Main process handlers: defined in `src/main/ipc.ts`
 
-## 许可证
+## License
 
 MIT

@@ -3,7 +3,7 @@ import { Modal, Form, Input, InputNumber, Select, DatePicker, message } from 'an
 import dayjs, { type Dayjs } from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { useTradeStore } from '../../store/useTradeStore'
-import type { Trade } from '../../../types'
+import type { Trade } from '../../../../types'
 
 interface TradeFormProps {
   open: boolean

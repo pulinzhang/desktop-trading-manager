@@ -37,7 +37,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
   }, [user, activeSession])
 
   useEffect(() => {
-    // 初始化新会话的初始资金为设置中的值
+    // Initialize the new session capital from user settings
     if (settings) {
       setNewSessionInitialCapital(settings.initial_capital)
     }
@@ -45,7 +45,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
 
   useEffect(() => {
     if (activeSession && settings && trades.length > 0) {
-      // 自动计算下一个交易金额
+      // Auto-calculate the next trade amount
       const lastTrade = trades[trades.length - 1]
       window.electronAPI.calculateNextTradeAmount({
         currentBalance: lastTrade.current_balance,
@@ -58,7 +58,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
         setNewTradeAmount(amount)
       })
     } else if (activeSession && settings) {
-      // 首次交易，使用风险百分比
+      // First trade: use the risk percentage
       const currentBalance = activeSession.initial_capital
       setNewTradeAmount(currentBalance * (settings.risk_percent / 100))
     }
@@ -66,7 +66,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
 
   const handleNewSession = () => {
     if (!user || !settings) return
-    // 打开确认对话框
+    // Show confirmation modal
     setNewSessionModalVisible(true)
     setNewSessionInitialCapital(settings.initial_capital)
   }
@@ -80,7 +80,7 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     }
 
     try {
-      // 创建新会话（createSession会自动更新activeSession，useEffect会自动刷新交易列表）
+      // createSession updates activeSession; effects refresh the trade list
       await createSession(user.id, newSessionInitialCapital, settings.currency)
       message.success(t('session.newSessionCreated'))
       setNewSessionModalVisible(false)
@@ -89,12 +89,12 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
     }
   }
 
-  // 计算当前会话的统计信息
+  // Derive statistics for the active session
   const getCurrentSessionStats = () => {
     if (!activeSession) return null
 
     const lastTrade = trades.length > 0 ? trades[trades.length - 1] : null
-    const currentBalance = lastTrade 
+    const currentBalance = lastTrade
       ? lastTrade.current_balance 
       : activeSession.initial_capital
     
@@ -159,32 +159,32 @@ export function SessionPanel({ isDark }: SessionPanelProps) {
 
     const currentNumber = activeSession.session_number
     const newNumber = Math.max(1, currentNumber + delta)
-    
-    // 如果新号码和当前号码相同，不需要切换
+
+    // Skip if the requested session is already active
     if (newNumber === currentNumber) return
 
     try {
-      // 如果会话列表为空，先加载它
+      // Ensure the session list is loaded
       let sessionsList = sessions
       if (sessionsList.length === 0) {
         await fetchSessions(user.id)
         sessionsList = useSessionStore.getState().sessions
       }
 
-      // 查找目标会话号的会话
+      // Find the target session number
       const targetSession = sessionsList.find(s => s.session_number === newNumber)
       
       if (targetSession) {
-        // 将所有会话设为非活动
+        // Mark every session as inactive
         const updatePromises = sessionsList
           .filter(s => s.is_active)
           .map(s => updateSession(s.id, { is_active: false }))
         await Promise.all(updatePromises)
-        
-        // 将目标会话设为活动
+
+        // Activate the requested session
         await updateSession(targetSession.id, { is_active: true })
-        
-        // 刷新活动会话和会话列表
+
+        // Refresh active session and session list
         await Promise.all([
           fetchActiveSession(user.id),
           fetchSessions(user.id)

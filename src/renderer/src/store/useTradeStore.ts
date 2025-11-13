@@ -25,7 +25,7 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
       const trades = await window.electronAPI.getTrades(userId, sessionId)
       set({ trades, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '获取交易失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to fetch trades', loading: false })
     }
   },
 
@@ -38,7 +38,7 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         loading: false
       }))
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '创建交易失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to create trade', loading: false })
       throw error
     }
   },
@@ -54,7 +54,7 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         }))
       }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '更新交易失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to update trade', loading: false })
       throw error
     }
   },
@@ -68,7 +68,7 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
         loading: false
       }))
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '删除交易失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to delete trade', loading: false })
       throw error
     }
   },
@@ -79,7 +79,7 @@ export const useTradeStore = create<TradeStore>((set, get) => ({
       await window.electronAPI.clearTrades(userId, sessionId)
       set({ trades: [], loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '清空交易失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to clear trades', loading: false })
       throw error
     }
   }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useTradeStore } from '../../store/useTradeStore'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useSessionStore } from '../../store/useSessionStore'
-import type { Trade } from '../../../types'
+import type { Trade } from '../../../../types'
 import './TradeTable.css'
 
 export function TradeTable() {
@@ -28,14 +28,14 @@ export function TradeTable() {
       const trade = trades.find(t => t.id === tradeId)
       if (!trade) return
 
-      // 计算回报
+      // Compute the return
       const returnAmount = await window.electronAPI.calculateTradeReturn({
         tradeAmount: trade.trade_amount,
         result,
         payoutPercent: activeSession.payout_percent || 92
       })
 
-      // 计算新的余额
+      // Compute the updated balance
       const newBalance = trade.current_balance + returnAmount
 
       await updateTrade(tradeId, {
@@ -44,7 +44,7 @@ export function TradeTable() {
         current_balance: newBalance
       })
 
-      // 更新后续交易的余额
+      // Update balances for subsequent trades
       const tradeIndex = trades.findIndex(t => t.id === tradeId)
       if (tradeIndex >= 0) {
         const subsequentTrades = trades.slice(tradeIndex + 1)
@@ -57,7 +57,7 @@ export function TradeTable() {
         }
       }
       
-      // 重新获取交易列表以更新显示
+      // Refresh trades to update the table
       await fetchTrades(user.id, activeSession.id)
 
       message.success(t('trade.resultUpdated'))

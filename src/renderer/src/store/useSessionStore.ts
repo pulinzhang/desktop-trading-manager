@@ -15,7 +15,7 @@ interface SessionStore {
   resetSessionCounter: (userId: number) => Promise<void>
 }
 
-export const useSessionStore = create<SessionStore>((set, get) => ({
+export const useSessionStore = create<SessionStore>((set) => ({
   activeSession: null,
   sessions: [],
   loading: false,
@@ -27,7 +27,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       const session = await window.electronAPI.getActiveSession(userId)
       set({ activeSession: session, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '获取会话失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to fetch session', loading: false })
     }
   },
 
@@ -37,7 +37,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       const sessions = await window.electronAPI.getSessions(userId)
       set({ sessions, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '获取会话列表失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to fetch sessions', loading: false })
     }
   },
 
@@ -47,7 +47,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       const newSession = await window.electronAPI.createSession(userId, initialCapital, currency)
       set({ activeSession: newSession, loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '创建会话失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to create session', loading: false })
       throw error
     }
   },
@@ -64,7 +64,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
         }))
       }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '更新会话失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to update session', loading: false })
       throw error
     }
   },
@@ -75,7 +75,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       await window.electronAPI.resetSessionCounter(userId)
       set({ loading: false })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : '重置会话计数器失败', loading: false })
+      set({ error: error instanceof Error ? error.message : 'Failed to reset session counter', loading: false })
     }
   }
 }))

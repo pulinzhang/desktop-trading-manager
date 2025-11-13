@@ -24,7 +24,7 @@ export function AnimatedStatistic({ value, duration = 800, ...props }: AnimatedS
         const elapsed = now - startTime
         const progress = Math.min(elapsed / duration, 1)
 
-        // 使用缓动函数
+        // Apply easing
         const easeOutCubic = 1 - Math.pow(1 - progress, 3)
         const currentValue = startValue + (endValue - startValue) * easeOutCubic
 

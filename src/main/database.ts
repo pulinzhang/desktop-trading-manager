@@ -10,7 +10,7 @@ export function initDatabase(): void {
 
   db = new Database(dbPath)
 
-  // 创建用户表
+  // Create database schema if missing
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,12 +87,12 @@ export function initDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(date);
   `)
 
-  console.log('数据库初始化完成:', dbPath)
+  console.log('Database initialized at:', dbPath)
 }
 
 export function getDatabase(): Database.Database {
   if (!db) {
-    throw new Error('数据库未初始化')
+    throw new Error('Database not initialized')
   }
   return db
 }
@@ -101,7 +101,7 @@ export function closeDatabase(): void {
   if (db) {
     db.close()
     db = null
-    console.log('数据库连接已关闭')
+    console.log('Database connection closed')
   }
 }
 

@@ -13,20 +13,20 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 export async function registerUser(email: string, password: string): Promise<User> {
   const db = getDatabase()
   
-  // 检查用户是否已存在
+  // Check if the user already exists
   const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined
   if (existingUser) {
-    throw new Error('用户已存在')
+    throw new Error('User already exists')
   }
 
-  // 创建用户
+  // Create the user
   const passwordHash = await hashPassword(password)
   const stmt = db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)')
   const result = stmt.run(email, passwordHash)
 
   const newUser = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid) as User
 
-  // 创建默认设置
+  // Seed default settings
   const settingsStmt = db.prepare(`
     INSERT INTO user_settings (
       user_id, initial_capital, risk_percent, recovery_multiplier,
@@ -86,13 +86,13 @@ export async function updateUserSettings(userId: number, updates: Partial<UserSe
   const fields = Object.keys(updates).filter(key => allowedFields.includes(key))
   
   if (fields.length === 0) {
-    throw new Error('没有有效的更新字段')
+    throw new Error('No valid fields provided for update')
   }
 
   const setClause = fields.map(field => `${field} = ?`).join(', ')
   const values = fields.map(field => {
     const value = updates[field as keyof UserSettings]
-    // 处理布尔值转换为整数
+    // Persist booleans as integers
     if (typeof value === 'boolean') {
       return value ? 1 : 0
     }

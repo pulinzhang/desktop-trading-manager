@@ -1,9 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { Trade, Session, User, UserSettings } from '../types'
 
-// 暴露受保护的方法给渲染进程
+// Expose a safe API to the renderer process
 contextBridge.exposeInMainWorld('electronAPI', {
-  // 认证相关 API
+  // Authentication API
   register: (email: string, password: string): Promise<User> =>
     ipcRenderer.invoke('auth:register', email, password),
   login: (email: string, password: string): Promise<User | null> =>
@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateSettings: (userId: number, updates: Partial<UserSettings>): Promise<UserSettings> =>
     ipcRenderer.invoke('auth:updateSettings', userId, updates),
 
-  // 交易相关 API
+  // Trades API
   getTrades: (userId: number, sessionId?: number): Promise<Trade[]> =>
     ipcRenderer.invoke('db:getTrades', userId, sessionId),
   getTrade: (id: number): Promise<Trade | null> =>
@@ -27,7 +27,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   clearTrades: (userId: number, sessionId?: number): Promise<boolean> =>
     ipcRenderer.invoke('db:clearTrades', userId, sessionId),
 
-  // 会话相关 API
+  // Sessions API
   getSessions: (userId: number): Promise<Session[]> =>
     ipcRenderer.invoke('db:getSessions', userId),
   getActiveSession: (userId: number): Promise<Session | null> =>
@@ -39,7 +39,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   resetSessionCounter: (userId: number): Promise<void> =>
     ipcRenderer.invoke('db:resetSessionCounter', userId),
 
-  // 计算相关 API
+  // Calculation API
   calculateNextTradeAmount: (params: {
     currentBalance: number
     previousTradeAmount: number | null
@@ -56,17 +56,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }): Promise<number> =>
     ipcRenderer.invoke('calc:tradeReturn', params),
 
-  // 导出 API
+  // Export API
   exportTrades: (userId: number, sessionId?: number): Promise<string> =>
     ipcRenderer.invoke('export:trades', userId, sessionId),
 
-  // 菜单事件监听
+  // Menu event listeners
   onMenuNewTrade: (callback: () => void) => {
     ipcRenderer.on('menu-new-trade', callback)
     return () => ipcRenderer.removeListener('menu-new-trade', callback)
   },
 
-  // 语言切换
+  // Language switching
   sendLanguageChange: (lang: string) => {
     ipcRenderer.send('language-changed', lang)
   }

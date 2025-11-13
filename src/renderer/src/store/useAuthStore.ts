@@ -17,7 +17,7 @@ interface AuthStore {
   updateSettings: (updates: Partial<UserSettings>) => Promise<void>
 }
 
-// 检查 electronAPI 是否可用
+// Validate that electronAPI is available
 const checkElectronAPI = () => {
   if (!window.electronAPI) {
     throw new Error(i18n.t('login.electronApiNotInitialized'))
@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         throw new Error(i18n.t('login.invalidCredentials'))
       }
       set({ user, isAuthenticated: true, loading: false })
-      // 加载用户设置
+      // Load user settings
       await get().loadSettings()
     } catch (error) {
       set({ error: error instanceof Error ? error.message : i18n.t('login.loginFailed'), loading: false })
@@ -54,7 +54,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       checkElectronAPI()
       const user = await window.electronAPI.register(email, password)
       set({ user, isAuthenticated: true, loading: false })
-      // 加载用户设置
+      // Load user settings
       await get().loadSettings()
     } catch (error) {
       set({ error: error instanceof Error ? error.message : i18n.t('login.registerFailed'), loading: false })

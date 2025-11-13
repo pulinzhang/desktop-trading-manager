@@ -1,14 +1,14 @@
-; NSIS 安装器自定义脚本
-; 此文件包含 Windows 安装器的自定义配置
+; NSIS custom installer script
+; Provides Windows installer customizations.
 
-; 安装完成后显示消息
+; Message shown after installation completes
 !macro customFinish
-  MessageBox MB_OK "Desktop Trading Manager App 已成功安装！"
+  MessageBox MB_OK "Desktop Trading Manager App has been installed successfully!"
 !macroend
 
-; 卸载前确认
+; Confirm before uninstalling
 !macro customUnInit
-  MessageBox MB_YESNO "确定要卸载 Desktop Trading Manager App 吗？" IDYES +2
+  MessageBox MB_YESNO "Are you sure you want to uninstall Desktop Trading Manager App?" IDYES +2
   Abort
 !macroend
 

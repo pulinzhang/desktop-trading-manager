@@ -6,7 +6,7 @@ export function LanguageSwitcher() {
 
   const handleLanguageChange = (value: string) => {
     i18n.changeLanguage(value)
-    // 通知主进程更新菜单
+    // Notify the main process to refresh menus
     if (window.electronAPI) {
       window.electronAPI.sendLanguageChange(value)
     }

@@ -32,7 +32,7 @@ export function Dashboard({ isDark, setIsDark }: DashboardProps) {
       if (user) {
         await loadSettings()
         await fetchActiveSession(user.id)
-        // 检查是否有活动会话，如果没有则创建
+        // Ensure there is an active session; create one if missing
         const currentSettings = await window.electronAPI.getSettings(user.id)
         if (currentSettings) {
           const sessions = await window.electronAPI.getSessions(user.id)

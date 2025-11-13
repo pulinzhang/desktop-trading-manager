@@ -3,7 +3,7 @@ import { Card, Statistic, Tag } from 'antd'
 import { FireOutlined, ThunderboltOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useTradeStore } from '../../store/useTradeStore'
-import type { Trade } from '../../../types'
+import type { Trade } from '../../../../types'
 import './StreakTracker.css'
 
 export function StreakTracker() {
@@ -16,7 +16,7 @@ export function StreakTracker() {
         return { type: null, count: 0 }
       }
 
-      // 从最新的交易开始计算
+      // Start calculation from the most recent trade
       const sortedTrades = [...trades].sort((a, b) => {
         if (a.sequence_number !== b.sequence_number) {
           return b.sequence_number - a.sequence_number
